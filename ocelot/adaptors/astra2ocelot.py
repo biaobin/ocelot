@@ -200,6 +200,57 @@ def astraBeam2particleArray(filename, print_params=True):
 
     return p_array
 
+def imptBeam2particleArray(filename, print_params=True, resample=1):
+    """
+    Biaobin Li, 2025-10
+    function convert Impact-T beam distribution to Ocelot format - ParticleArray.
+    Note that downloading ParticleArray from the astra file and saving it back does not give the same distribution.
+
+    :param print_params:
+    :type filename: str
+    :return: ParticleArray
+    """
+    with open(filename) as f:
+        line1 = f.readline().strip().split()
+        P0 = np.loadtxt(f)
+
+    Np = int(line1[0])
+    totalCharge = abs(float(line1[1]))
+
+    s_ref = np.mean( P0[:,4] )
+    gambetx0 = np.mean(P0[:,1])
+    gambety0 = np.mean(P0[:,3])
+    gambetz0 = np.mean(P0[:,5])
+    gambet0 = np.sqrt(gambetx0**2 +gambety0**2 +gambetz0**2)
+    gam0 = np.sqrt(gambet0**2 +1)
+    bet0 = gambet0/gam0
+
+    gambeti = np.sqrt(P0[:,1]**2+P0[:,3]**2+P0[:,5]**2)
+    gami = np.sqrt(gambeti**2 +1)
+    dgami = gami-gam0
+
+    # resample
+    np1 = len(P0[::resample,0])
+    charge_array = np.ones(np1)*totalCharge/np1
+
+    p_array = ParticleArray(np1)
+
+    p_array.s = s_ref
+    p_array.E = gam0 * m_e_GeV
+    p_array.rparticles[0] = P0[::resample, 0]
+    p_array.rparticles[1] = P0[::resample, 1]/gambet0
+    p_array.rparticles[2] = P0[::resample, 2]
+    p_array.rparticles[3] = P0[::resample, 3]/gambet0
+    p_array.rparticles[4] = -(P0[::resample, 4]-s_ref)/bet0
+    p_array.rparticles[5] = dgami[::resample]/(gambet0)
+    p_array.q_array = charge_array
+
+    if print_params:
+        print("Impact-T to Ocelot: charge = ", sum(charge_array), " C")
+        print("Impact-T to Ocelot: particles number = ", len(charge_array))
+        print("Impact-T to Ocelot: energy = ", p_array.E, " GeV")
+        print("Impact-T to Ocelot: s pos = ", p_array.s, " m")
+    return p_array
 
 def particleArray2astraBeam(p_array, filename="tytest.ast"):
     """

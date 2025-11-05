@@ -110,7 +110,11 @@ class CavityAtom(Element):
                 logger.error("CAVITY: Initial energy is 0, check ParticleArray.E or Twiss.E OR cavity.v must be 0")
 
             cos_phi = np.cos(phi)
-            alpha = np.sqrt(eta / 8.) / cos_phi * np.log(Ef / Ei)
+
+            if abs(cos_phi) > 1e-10:
+                alpha = np.sqrt(eta / 8.) / cos_phi * np.log(Ef / Ei)
+            else:
+                alpha = np.sqrt(eta / 8.) *(V/m_e_GeV)/Ei
             sin_alpha = np.sin(alpha)
 
             cos_alpha = np.cos(alpha)
@@ -141,8 +145,13 @@ class CavityAtom(Element):
                 r56 = - z / (Ef * Ef * Ei * beta1) * (Ef + Ei) / (beta1 + beta0)
                 g0 = Ei
                 g1 = Ef
-                r55_cor = k * z * beta0 * V / m_e_GeV * np.sin(phi) * (g0 * g1 * (beta0 * beta1 - 1) + 1) / (
-                    beta1 * g1 * (g0 - g1) ** 2)
+                
+                if abs(cos_phi) > 1e-10:
+                    r55_cor = k * z * beta0 * V / m_e_GeV * np.sin(phi) * (g0 * g1 * (beta0 * beta1 - 1) + 1) / (
+                        beta1 * g1 * (g0 - g1) ** 2)
+                else:
+                    r55_cor = k * z * beta0 * V / m_e_GeV * np.sin(phi) /(-2*(g0*beta0)**3)
+                    # print("r55_cor=",r55_cor)
 
             r66 = Ei / Ef * beta0 / beta1
             r65 = k * np.sin(phi) * V / (Ef * beta1 * m_e_GeV)

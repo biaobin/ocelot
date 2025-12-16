@@ -63,7 +63,7 @@ class CavityTM(TransferMap):
                     np.cos(-X4 * beta0 * k + phi) - np.cos(phi))
 
             dgamma = V / m_e_GeV
-            if delta_e > 0:
+            if delta_e > 1e-10:
                 T566 = z * (beta0 ** 3 * g0 ** 3 - beta1 ** 3 * g1 ** 3) / (
                         2 * beta0 * beta1 ** 3 * g0 * (g0 - g1) * g1 ** 3)
                 T556 = beta0 * k * z * dgamma * g0 * (beta1 ** 3 * g1 ** 3 + beta0 * (g0 - g1 ** 3)) * np.sin(phi) / (

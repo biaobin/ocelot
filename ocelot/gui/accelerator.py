@@ -1031,7 +1031,7 @@ def show_e_beam(p_array, nparts_in_slice=5000, smooth_param=0.05, nbins_x=200, n
         fig.suptitle(title)
     ax_sp = plt.subplot(325)
     plt.title("Energy spread")
-    plt.plot(slice_params.s * tau_factor, slice_params.se * 1e-3, "b")
+    plt.plot(slice_params.s * tau_factor, slice_params.se * 1e-3, "b-")
     # plt.legend()
     plt.xlabel(tau_label)
     plt.ylabel(r"$\sigma_E\,[\mathrm{keV}]$")
@@ -1041,9 +1041,9 @@ def show_e_beam(p_array, nparts_in_slice=5000, smooth_param=0.05, nbins_x=200, n
     plt.title("Emittances")
     emitxn_mm_mrad = np.round(slice_params.emitxn * 1e6, 2)
     emityn_mm_mrad = np.round(slice_params.emityn * 1e6, 2)
-    plt.plot(slice_params.s * tau_factor, slice_params.exn*1e6, "r",
+    plt.plot(slice_params.s * tau_factor, slice_params.exn*1e6, "r-",
              label=fr"$\varepsilon_x^{{\mathrm{{proj}}}} = {emitxn_mm_mrad}\,\mathrm{{mm\cdot{{}}mrad}}$")
-    plt.plot(slice_params.s * tau_factor, slice_params.eyn*1e6, "b",
+    plt.plot(slice_params.s * tau_factor, slice_params.eyn*1e6, "b-",
              label=rf"$\varepsilon_y^{{\mathrm{{proj}}}} = {emityn_mm_mrad}\,\mathrm{{mm\cdot{{}}mrad}}$")
     plt.legend()
     plt.setp(ax_em.get_xticklabels(), visible=False)
@@ -1053,7 +1053,7 @@ def show_e_beam(p_array, nparts_in_slice=5000, smooth_param=0.05, nbins_x=200, n
     ax_c = plt.subplot(321, sharex=ax_sp)
     plt.title("Current")
 
-    plt.plot(slice_params.s * tau_factor, slice_params.I, "b")
+    plt.plot(slice_params.s * tau_factor, slice_params.I, "b-")
     imax = np.max(slice_params.I)
     imax_label = rf"$I_{{\mathrm{{max}}}}= {imax:.0f}\,\mathrm{{A}}$"
     leg = ax_c.legend([imax_label], handlelength=0, handletextpad=0, fancybox=True, loc="best")
